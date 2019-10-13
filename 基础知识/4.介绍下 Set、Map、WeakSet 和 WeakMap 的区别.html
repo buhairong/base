@@ -106,8 +106,8 @@ weakMap
     console.log(s4.has(2)) // true
     console.log(s4.has(3)) // false
 
-    s.delete(2);
-    console.log(s.has(2)) // false
+    s4.delete(2);
+    console.log(s4.has(2)) // false
 
 /*
     Set结构的实例有四个遍历方法，可以用于遍历成员
@@ -118,5 +118,119 @@ weakMap
 
     需要特别指出的是，Set的遍历顺序就是插入顺序。这个特性有时非常有用，
     比如使用Set保存一个回调函数列表，调用时就能保证按照添加顺序调用。
+
+    （1） keys() values() entries()
+    keys方法、values方法、entries方法返回的都是遍历器对象
+    由于Set没有键名，只有键值，所以keys方法和values方法的行为完全一致
+
+    entries方法返回的遍历器，同时包括键名和键值，
+    所以每次输出一个数组，它的两个成员完全相等。
+*/
+    let s5 = new Set(['red', 'green', 'blue'])
+
+    for(let item of s5.keys()){
+        console.log(item)  // red green blue
+    }
+
+    for(let item of s5.values()) {
+        console.log(item) // red green blue
+    }
+
+    for(let item of s5.entries()){
+        console.log(item) // ['red', 'red']  ['green', 'green']  ['blue', [blue]]
+    }
+
+/*
+    (2) forEach
+    Set结构的实例与数组一样，也拥有forEach，用于对每个成员执行某种操作，没有返回值
+    forEach的参数是一个处理函数，该函数的参数与数组的forEach一致，
+    依次为键值、键名、集合本身。
+    这里需要注意，Set结构的键名就是键值，因此第一个参数与第二个参数的值永远都是一样的。
+*/
+
+    let s6 = new Set([1, 4, 9])
+    s6.forEach((value, key) => {
+        console.log(value, key) // 1 1 4 4 9 9
+    })
+
+/*
+    (3)遍历的应用
+    扩展运算符(...)内部使用for...of循环，所以也可以用于Set结构
+*/
+    let s7 = new Set(['red', 'green', 'blue'])
+    console.log([...s7]) // ['red', 'green', 'blue']
+
+/*
+    扩展运算符和Set结构相结合，就可以去除数组的重复成员
+*/
+    console.log([...new Set([3, 5, 2, 2, 5, 5])]) // [3,5,2]
+
+/*
+    数组的map和filter方法也可以间接用于Set
+*/
+    let s8 = new Set([1,2,3])
+    s8 = new Set([...s8].map(x => x*2))
+    console.log(s8) // 返回一个Set结构 {2,4,6}
+
+    let s9 = new Set([1,2,3,4,5])
+    s9 = new Set([...s9].filter(x => x%2 === 0))
+    console.log(s9) // 返回一个Set结构 {2,4}
+
+/*
+    使用 Set 可以很容易地实现并集、交集和差集
+*/
+    let a = new Set([1, 2, 3])
+    let b = new Set([4, 3, 2])
+
+    // 并集
+    let union = new Set([...a, ...b])
+    console.log(union) // {1, 2, 3, 4}
+
+    // 交集
+    let intersect = new Set([...a].filter(x => b.has(x)))
+    console.log(intersect) // {2, 3}
+
+    // 差集
+    let difference = new Set([...a].filter(x => !b.has(x)))
+    console.log(difference) // {1}
+
+/*
+    如果想在遍历操作中，同步改变原来的 Set 结构，目前没有直接的方法，但有两种变通方法。
+    一种是利用原 Set 结构映射出一个新的结构，然后赋值给原来的 Set 结构；
+    另一种是利用Array.from方法。
+*/
+    // 方法一
+    let set10 = new Set([1, 2, 3]);
+    set10 = new Set([...set10].map(val => val * 2));
+    console.log(set10) // set的值是2, 4, 6
+
+    // 方法二
+    let set11 = new Set([1, 2, 3]);
+    set11 = new Set(Array.from(set11, val => val * 2));
+    console.log(set11) // set的值是2, 4, 6
+
+/*
+    ####  WeakSet
+
+    WeakSet结构与Set类似，也是不重复的值的集合。
+    但是，它与Set有两个区别。
+    首先，WeakSet的成员只能是对象，而不能是其他类型的值。
+    其次，WeakSet中的对象都是弱引用，
+    即垃圾回收机制不考虑WeakSet对该对象的引用
+    也就是说，如果其他对象都不再引用该对象，
+    那么垃圾回收机制会自动回收该对象所占用的内存，
+    不考虑该对象还存在于WeakSet之中。
+
+    这是因为垃圾回收机制依赖引用计数，
+    如果一个值的引用次数不为0，垃圾回收机制就不会释放这块内存。
+    结束使用该值之后，有时会忘记取消引用，导致内存无法释放，进而可能会引发内存泄漏。
+    WeakSet里面的引用，都不计入垃圾回收机制，所以就不存在这个问题。
+    因此，WeakSet适合临时存放一组对象，以及存放跟对象绑定的信息。
+    只要这些对象在外部消失，它在WeakSet里面的引用就会自动消失。
+
+    由于上面这个特点，WeakSet的成员是不适合引用的，因为它会随时消失。
+    另外，由于WeakSet内部有多少个成员，取决于垃圾回收机制有没有运行，
+    运行前后很可能成员个数是不一样的，而垃圾回收机制何时运行是不可预测的，
+    因此ES6规定WeakSet不可遍历。
 */
 </script>
