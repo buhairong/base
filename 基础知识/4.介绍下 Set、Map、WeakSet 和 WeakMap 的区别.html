@@ -13,6 +13,28 @@
 </html>
 <script>
 /*
+Set
+    1.成员不能重复
+    2.只有健值，没有健名，有点类似数组。
+    3. 可以遍历，方法有add, delete,has
+
+weakSet
+    成员都是对象
+    成员都是弱引用，随时可以消失。 可以用来保存DOM节点，不容易造成内存泄漏
+    不能遍历，方法有add, delete,has
+
+Map
+    本质上是健值对的集合，类似集合
+    可以遍历，方法很多，可以跟各种数据格式转换
+
+weakMap
+    1.直接受对象作为健名（null除外），不接受其他类型的值作为健名
+    健名所指向的对象，不计入垃圾回收机制
+    不能遍历，方法同get,set,has,delete
+*/
+
+
+/*
     Set
 
     基本用法
@@ -21,12 +43,80 @@
     Set本身是一个构造函数，用来生成 Set 数据结构。
 */
     const s = new Set([2, 3, 5, 4, 5, 2, 2])
-    console.log(s) // [2, 3, 5, 4]   Set结构不能有重复的值
+    console.log(s) // {2, 3, 5, 4}  Set结构不能有重复的值
 
 /*
     Set函数可以接受一个数组（或者具有 iterable 接口的其他数据结构）作为参数，用来初始化
 */
 
     const set = new Set(document.querySelectorAll('div'))
-    console.log(set.size)
+    console.log(set.size) // 4
+
+/*
+    可以用于数组去重
+*/
+    console.log(Array.from(new Set([1, 1, 2, 3]))) // [1,2,3]
+
+/*
+    也可以用于去除字符串里的重复字符
+*/
+    const s1 = new Set('ababbc')
+    console.log(Array.from(s1).join('')) // abc
+
+/*
+    向Set加入值的时候，不会发生类型转换，所以5和'5'是两个不同的值
+    Set内部判断两个值是否不同，使用的算法叫做"same-value-zero equality",它类似于精确相等运算符（===）
+    向Set实例中添加两次NaN，但只会加入一个。在Set内部，两个NaN是相等的
+*/
+
+    let s2 = new Set()
+    s2.add(NaN)
+    s2.add(NaN)
+    console.log(s2) // {NaN}
+
+/*
+    另外两个对象总算不相等的
+*/
+    let s3 = new Set()
+    s3.add({})
+    console.log(s3.size) // 1
+    s3.add({})
+    console.log(s3.size) // 2
+
+/*
+    Set实例的属性和方法
+    Set结构的实例有以下属性：
+        Set.prototype.constructor: 构造函数，默认就是Set函数
+        Set.prototype.size: 返回Set实例的成员总数
+
+    Set的实例方法分为两大类：操作方法（用于操作数据）和遍历方法（用于遍历成员）
+    下面先介绍四个操作方法：
+        Set.prototype.add(value): 添加某个值，返回Set结构本身
+        Set.prototype.delete(value): 删除某个值，返回一个布尔值，表示删除是否成功
+        Set.prototype.has(value): 返回一个布尔值，表示该值是否为Set的成员
+        Set.prototype.clear(): 清除所有成员，没有返回值
+
+*/
+    let s4 = new Set()
+    s4.add(1).add(2).add(2) // 注意2被加入了两次
+
+    console.log(s4.size) // 2
+
+    console.log(s4.has(1)) // true
+    console.log(s4.has(2)) // true
+    console.log(s4.has(3)) // false
+
+    s.delete(2);
+    console.log(s.has(2)) // false
+
+/*
+    Set结构的实例有四个遍历方法，可以用于遍历成员
+        Set.prototype.keys()  返回键名的遍历器
+        Set.prototype.values()  返回键值的遍历器
+        Set.prototype.entries()  返回键值对的遍历器
+        Set.prototype.forEach()  使用回调函数遍历每个成员
+
+    需要特别指出的是，Set的遍历顺序就是插入顺序。这个特性有时非常有用，
+    比如使用Set保存一个回调函数列表，调用时就能保证按照添加顺序调用。
+*/
 </script>
