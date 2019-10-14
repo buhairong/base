@@ -292,6 +292,132 @@ weakMap
 */
 
 /*
-    Map
+    ####  Map
+
+    JavaScript的对象（Object），本质上是键值对的集合（Hash结构），
+    但是传统上只能用字符串当做键。这给它的使用带来了很大的限制。
+
+    为了解决这个问题，ES6提供了Map数据结构。
+    它类似于对象，也是键值对的集合，但是“键”的范围不限于字符串。
+    各种类型的值（包括对象）都可以当做键。
+    也就是说，Object结构提供了“字符串-值”的对应
+    Map结构提供了“值-值”的对应，是一种更完善的Hash结构实现。
+    如果你需要“键值对”的数据结构，Map比Object更合适。
+*/
+
+    const map = new Map()
+    const o = {p: 'Hello World'}
+    map.set(o, 'content')
+    console.log(map.get(o)) // "content"
+    console.log(map.has(o)) // true
+    map.delete(o)
+    console.log(map.has(o)) // false
+
+/*
+    作为构造函数，Map也可以接受一个数组作为参数。
+    该数组的成员是一个个表示键值对的数组。
+*/
+    const map2 = new Map([
+        ['name', '张三'],
+        ['title', 'Author']
+    ])
+
+    console.log(map2.size) // 2
+    console.log(map2.has('name')) // true
+    console.log(map2.get('name')) // 张三
+
+/*
+    Map构造函数接受数组作为参数，实际上执行的是下面的算法
+*/
+    const item = [
+        ['name', '张三'],
+        ['title', 'Author']
+    ]
+
+    const map3 = new Map()
+    item.forEach(([key, value]) => map3.set(key, value))
+
+/*
+    事实上，不仅仅是数组，任何具有Iterator接口、且每个成员都是一个
+    双元素的数组的数据结构，都可以当做Map构造函数的参数。
+    这就是说，Set和Map都可以用来生成新的Map。
+*/
+
+    const set1 = new Set([
+        ['foo', 1],
+        ['bar', 2]
+    ])
+
+    const map4 = new Map(set1)
+    console.log(map4.get('foo')) // 1
+
+    const map5 = new Map([['baz', 3]])
+    const map6 = new Map(map5)
+    console.log(map6.get('baz')) // 3
+
+/*
+    如果对同一个键多次赋值，后面的值将覆盖前面的值。
+*/
+    const map7 = new Map()
+    map7.set(1, 'aaa')
+        .set(1, 'bbb')
+
+    console.log(map7.get(1)) // bbb
+
+/*
+    如果读取一个未知的键，则返回undefined
+*/
+    console.log(new Map().get('abc')) // undefined
+
+/*
+    注意， 只有对同一个对象的引用，Map结构才将其视为同一个键
+*/
+    const map8 = new Map()
+    map8.set(['a'], 5)
+    console.log(map8.get(['a'])) // undefined
+
+/*
+    同样值的两个实例，在Map结构中被视为两个键
+*/
+    const map9 = new Map()
+    const k1 = ['a']
+    const k2 = ['a']
+    map9.set(k1, 111)
+        .set(k2, 222)
+
+    console.log(map9.get(k1)) // 111
+    console.log(map9.get(k2)) // 222
+
+/*
+    由上可知，Map的键实际上是跟内存地址绑定的，
+    只要内存地址不一样，就视为两个键。
+    这就解决了同名属性碰撞的问题。
+    我们扩展别人的库的时候，如果使用对象作为键名，
+    就不用担心自己的属性与原作者的属性同名。
+
+    如果Map的键是一个简单类型的值（数值，字符串，布尔值），
+    则只要两个值严格相等，Map将其视为一个键。
+    比如0和-0就是一个键
+    布尔值true和字符串'true'则是两个不同的键
+    undefined和null也是两个不同的键
+    虽然NaN不严格相等于自身，但Map将其视为同一个键。
+*/
+    let map10 = new Map()
+    map10.set(-0, 123)
+    console.log(map10.get(+0))
+
+    map10.set(true, 1)
+    map10.set('true', 2)
+    console.log(map10.get(true)) // 1
+
+    map10.set(undefined, 3)
+    map10.set(null, 4)
+    console.log(map10.get(undefined)) // 3
+
+    map10.set(NaN, 123)
+    console.log(map10.get(NaN))
+
+/*
+    Map结构的实例有以下属性和操作方法
 */
 </script>
