@@ -13,6 +13,10 @@
 </html>
 <script>
 /*
+    相关知识点： http://es6.ruanyifeng.com/#docs/set-map
+*/
+
+/*
 Set
     1.成员不能重复
     2.只有健值，没有健名，有点类似数组。
@@ -419,5 +423,33 @@ weakMap
 
 /*
     Map结构的实例有以下属性和操作方法
+
+    (1) size属性：返回Map结构的成员总数
 */
+    const map11 = new Map()
+    map11.set('foo', true)
+    map11.set('bar', false)
+
+    console.log(map11.size) // 2
+
+/*
+    (2) Map.prototype.set(key, value)
+
+    set方法设置键名key对应的值为value,然后返回整个Map结构。
+    如果key已经有值，则键值会被更新，否则就新生成该键。
+*/
+
+    const map12 = new Map()
+    map12.set('edition', 6)     // 字符串
+    map12.set(262, 'standard') // 键是数值
+    map12.set(undefined, 'nah') // 键是undefined
+
+/*
+    Set方法返回的是当前的Map对象，因此可以采用链式写法
+*/
+    let map13 = new Map()
+        .set(1, 'a')
+        .set(2, 'b')
+        .set(3, 'c')
+
 </script>
